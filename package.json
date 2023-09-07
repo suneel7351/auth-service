@@ -4,15 +4,21 @@
   "description": "This is the auth service for mern stack project",
   "main": "index.js",
   "scripts": {
-    "format":"prettier .",
-    "format:check":"npm run format -- --check",
-    "format:fix":"npm run format -- --write",
-    "dev":"nodemon index.js"
+    "format": "prettier .",
+    "format:check": "npm run format -- --check",
+    "format:fix": "npm run format -- --write",
+    "dev": "nodemon index.js",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix"
   },
   "author": "Suneel Kumar <rsuneel47@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.5.9",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
+    "eslint": "^8.48.0",
+    "eslint-config-prettier": "^9.0.0",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
