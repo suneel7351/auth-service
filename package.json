@@ -14,6 +14,12 @@
   },
   "author": "Suneel Kumar <rsuneel47@gmail.com>",
   "license": "ISC",
+  "lint-staged": {
+    "*.ts": [
+      "prettier --check",
+      "eslint --mx-warnings=0"
+    ]
+  },
   "devDependencies": {
     "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
@@ -21,6 +27,7 @@
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
     "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
