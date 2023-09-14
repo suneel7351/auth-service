@@ -12,7 +12,10 @@ const startServer = async (port: number) => {
         });
     } catch (error: unknown) {
         if (typeof error === 'object' && error !== null && 'message' in error) {
-            logger.error(`Something went wrong ,${error.message}`);
+            logger.error(error.message);
+            setTimeout(() => {
+                process.exit(1);
+            }, 1000);
         }
     }
 };
