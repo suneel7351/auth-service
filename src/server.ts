@@ -1,9 +1,9 @@
-import { CONFIG } from './src/config';
+import { CONFIG } from './config';
 // import { CONFIG } from '@/config';
-import app from './src/app';
+import app from './app';
 // import { logger } from '@/config/logger';
 
-import { logger } from './src/config/logger';
+import { logger } from './config/logger';
 const PORT = CONFIG.PORT || 1666;
 const startServer = async (port: number) => {
     try {
