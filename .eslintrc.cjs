@@ -1,10 +1,10 @@
 /* eslint-env node */
 module.exports = {
-    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
+    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended-type-checked', 'prettier'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
         tsConfigRootDir: "__dirname",
-        project: ['./tsconfig.json'],
+        project: true,
     },
     plugins: ['@typescript-eslint'],
     root: true,
