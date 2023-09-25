@@ -1,6 +1,9 @@
+import "reflect-metadata"
+
 import express, { Request, Response, NextFunction } from 'express';
 import { HttpError } from 'http-errors';
 import cors from 'cors';
+import authRouter from './routes/auth'
 import { logger } from './config/logger';
 
 const app = express();
@@ -28,4 +31,7 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
         ],
     });
 });
+
+
+app.use("/auth", authRouter)
 export default app;
