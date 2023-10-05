@@ -1,6 +1,8 @@
 import { CONFIG } from './config';
+
 // import { CONFIG } from '@/config';
 import app from './app';
+
 // import { logger } from '@/config/logger';
 
 import { logger } from './config/logger';
@@ -12,7 +14,7 @@ const startServer = (port: number) => {
         });
     } catch (error: unknown) {
         if (typeof error === 'object' && error !== null && 'message' in error) {
-            logger.error(error.message);
+            logger.error(error);
             setTimeout(() => {
                 process.exit(1);
             }, 1000);

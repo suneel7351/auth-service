@@ -1,5 +1,8 @@
 node_modules
 dist
 build
-.env
+.env.dev
+.env.test
+.env.production
+
 logs
