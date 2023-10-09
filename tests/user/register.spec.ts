@@ -195,8 +195,121 @@ describe("POST /auth/register", () => {
     })
 
 
-    // describe("Fields are missing", () => {
+    describe("Fields are missing", () => {
 
-    // })
+        it("should return 400 if email field is missing", async () => {
+            const userData = {
+                firstName: "Suneel",
+                lastName: "Rajput",
+                email: "",
+                password: "password"
+            }
+
+            const res = await request(app).post("/auth/register").send(userData)
+            const userRepository = connection.getRepository(User)
+            const users = await userRepository.find()
+            expect(res.statusCode).toBe(400)
+            expect(users).toHaveLength(0)
+
+
+        })
+
+        it("should return 400 if firstname field is missing", async () => {
+            const userData = {
+                firstName: "",
+                lastName: "Rajput",
+                email: "rsuneel47@gmail.com",
+                password: "password"
+            }
+
+            const res = await request(app).post("/auth/register").send(userData)
+            const userRepository = connection.getRepository(User)
+            const users = await userRepository.find()
+            expect(res.statusCode).toBe(400)
+            expect(users).toHaveLength(0)
+
+
+        })
+
+        it("should return 400 if password field is missing", async () => {
+            const userData = {
+                firstName: "Suneel",
+                lastName: "",
+                email: "rsuneel47@gmail.com",
+                password: ""
+            }
+
+            const res = await request(app).post("/auth/register").send(userData)
+            const userRepository = connection.getRepository(User)
+            const users = await userRepository.find()
+            expect(res.statusCode).toBe(400)
+            expect(users).toHaveLength(0)
+
+
+        })
+
+
+
+
+
+    })
+
+
+
+    describe("input fields are not in correct format", () => {
+
+        it("should trim email", async () => {
+            const userData = {
+                firstName: "Suneel",
+                lastName: "Rajput",
+                email: " rsuneel47@gmail.com         ",
+                password: "password"
+            }
+
+            await request(app).post("/auth/register").send(userData)
+            const userRepository = connection.getRepository(User)
+            const users = await userRepository.find()
+            const user = users[0]
+            expect(user.email).toBe("rsuneel47@gmail.com")
+
+        })
+
+
+        it("should return 400 if email is not a valid email", async () => {
+            const userData = {
+                firstName: "Suneel",
+                lastName: "Rajput",
+                email: " rsuneel47gmail",
+                password: "password"
+            }
+
+            const res = await request(app).post("/auth/register").send(userData)
+
+            expect(res.statusCode).toBe(400)
+
+        })
+
+
+        it("should return 400 if password length is less than 6 character", async () => {
+            const userData = {
+                firstName: "Suneel",
+                lastName: "Rajput",
+                email: "rsuneel47@gmail",
+                password: "pasrd"
+            }
+
+            const res = await request(app).post("/auth/register").send(userData)
+            const userRepository = connection.getRepository(User)
+            const users = await userRepository.find()
+
+            expect(res.statusCode).toBe(400)
+            expect(users).toHaveLength(0)
+
+        })
+
+
+
+
+    })
 
 })
