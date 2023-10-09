@@ -4,7 +4,7 @@ import request from 'supertest'
 import { AppDataSource } from '../../src/config/data-source'
 
 import { User } from '../../src/entity/User'
-import { truncateTable } from '../utils'
+import { Roles } from '../../src/constants'
 
 describe("POST /auth/register", () => {
 
@@ -18,7 +18,10 @@ describe("POST /auth/register", () => {
     beforeEach(async () => {
         // Database Truncate
 
-        await truncateTable(connection)
+        await connection.dropDatabase()
+        await connection.synchronize()
+
+
     })
 
     afterAll(async () => {
@@ -93,6 +96,102 @@ describe("POST /auth/register", () => {
             expect(users[0].email).toBe(userData.email)
 
         })
+
+
+
+
+
+        // it.todo("should return created user id", async () => {
+        //     // Arrange
+        //     const userData = {
+        //         firstName: "Suneel",
+        //         lastName: "Rajput",
+        //         email: "rsuneel47@gmail.com",
+        //         password: "password"
+        //     };
+
+        //     // Act
+        //     const res = await request(app).post("/auth/register").send(userData);
+
+        //     // Assert
+        //     expect(res.statusCode).toBe(201);
+        //     expect(res.body).toHaveProperty('id');
+        // });
+
+
+
+
+        it("should assign a customer role", async () => {
+            // AAA
+            // ->1.Arrange(input data)
+            const userData = {
+                firstName: "Suneel",
+                lastName: "Rajput",
+                email: "rsuneel47@gmail.com",
+                password: "password"
+            }
+            // ->2.Act
+
+            await request(app).post("/auth/register").send(userData)
+            // ->3.Assert
+
+            const userRepository = connection.getRepository(User)
+
+            const users = await userRepository.find()
+
+
+
+            expect(users[0]).toHaveProperty("role")
+            expect(users[0].role).toBe(Roles.CUSTOMER)
+
+        })
+
+
+        it("should store the hashed password in database", async () => {
+            const userData = {
+                firstName: "Suneel",
+                lastName: "Rajput",
+                email: "rsuneel47@gmail.com",
+                password: "password"
+            }
+            // ->2.Act
+
+            await request(app).post("/auth/register").send(userData)
+
+
+            // Assert
+            const userRepository = connection.getRepository(User)
+
+            const users = await userRepository.find()
+
+            expect(users[0].password).not.toBe(userData.password)
+            expect(users[0].password).toHaveLength(60)
+            expect(users[0].password).toMatch(/^\$2b\$\d+\$/)
+        })
+
+
+        it("should return status code 400 if email already registered", async () => {
+            const userData = {
+                firstName: "Suneel",
+                lastName: "Rajput",
+                email: "rsuneel47@gmail.com",
+                password: "password"
+            }
+
+            const userRepository = connection.getRepository(User)
+            await userRepository.save({ ...userData, role: "customer" })
+            // ->2.Act
+
+            const res = await request(app).post("/auth/register").send(userData)
+            // Assert
+
+            const users = await userRepository.find()
+            expect(res.statusCode).toBe(400)
+
+            expect(users).toHaveLength(1)
+        })
+
+
     })
 
 
