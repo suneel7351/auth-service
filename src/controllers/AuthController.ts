@@ -2,9 +2,13 @@
 import { Logger } from 'winston';
 import { UserService } from '../services/UserService';
 import { RegisterUserRequest } from '../types';
-
+import { JwtPayload, sign } from 'jsonwebtoken'
 import { NextFunction, Response } from "express";
 import { validationResult } from 'express-validator';
+import fs from 'fs'
+import path from 'path';
+import createHttpError from 'http-errors';
+import { CONFIG } from '../config/index'
 
 
 export class AuthController {
@@ -29,6 +33,50 @@ export class AuthController {
 
 
             this.logger.info("User has been registered", { id: user.id })
+
+            let privateKey: Buffer
+            try {
+                privateKey = fs.readFileSync(path.join(__dirname, "../../certs/private.pem"))
+            } catch (error) {
+                const err = createHttpError(500, "Error while reading private key...")
+                next(err)
+                return
+            }
+            const payload: JwtPayload = {
+                sub: String(user.id),
+                role: user.role
+            }
+
+
+            const accessToken = sign(payload, privateKey, {
+                algorithm: "RS256", expiresIn: "1h", issuer: "auth-service"
+            })
+
+
+
+
+            // CONFIG.REFRESH_TOKEN_SECRET! iska mtlb sure hain ki ye string hogi empty nhi hoga
+
+            const refreshToken = sign(payload, CONFIG.REFRESH_TOKEN_SECRET!, {
+                algorithm: "HS256",
+                expiresIn: "15d",
+                issuer: "auth-service"
+            })
+
+            res.cookie("accessToken", accessToken, {
+                httpOnly: true,
+                sameSite: 'strict',
+                domain: "localhost",
+                maxAge: 1000 * 60 * 60,
+            })
+
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                sameSite: 'strict',
+                domain: "localhost",
+                maxAge: 1000 * 60 * 60 * 24 * 15
+            })
+
             res.status(201).json()
         } catch (error) {
             next(error)
