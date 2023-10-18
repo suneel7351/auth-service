@@ -9,7 +9,7 @@ export class UserService {
     async createUser({ firstName, lastName, email, password }: UserData) {
 
         const existUser = await this.userRepository.findOne({ where: { email } })
-        if (existUser) {
+        if (existUser !== null) {
             const error = createHttpError(400, "Email is already registered!")
             throw error
         }

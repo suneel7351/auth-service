@@ -9,6 +9,8 @@ import fs from 'fs'
 import path from 'path';
 import createHttpError from 'http-errors';
 import { CONFIG } from '../config/index'
+import { AppDataSource } from '../config/data-source';
+import { RefreshToken } from '../entity/RefreshToken';
 
 
 export class AuthController {
@@ -57,10 +59,26 @@ export class AuthController {
 
             // CONFIG.REFRESH_TOKEN_SECRET! iska mtlb sure hain ki ye string hogi empty nhi hoga
 
+
+            // persist the refresh token
+
+            const MS_IN_YEAR = 1000 * 60 * 60 * 24 * 365
+
+            const refreshTokenRepo = AppDataSource.getRepository(RefreshToken)
+
+            const newRefreshToken = await refreshTokenRepo.save({
+                user: user,
+                expiresAt: new Date(Date.now() + MS_IN_YEAR)
+            })
+
+
+
+
             const refreshToken = sign(payload, CONFIG.REFRESH_TOKEN_SECRET!, {
                 algorithm: "HS256",
                 expiresIn: "15d",
-                issuer: "auth-service"
+                issuer: "auth-service",
+                jwtid: String(newRefreshToken.id)
             })
 
             res.cookie("accessToken", accessToken, {
@@ -79,6 +97,8 @@ export class AuthController {
 
             res.status(201).json()
         } catch (error) {
+            // console.log(error);
+
             next(error)
         }
 

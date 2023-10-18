@@ -2,6 +2,7 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { User } from "../entity/User"
 import { CONFIG } from '../config/index'
+import { RefreshToken } from "../entity/RefreshToken"
 export const AppDataSource = new DataSource({
     type: "postgres",
     host: CONFIG.DB_HOST,
@@ -12,7 +13,7 @@ export const AppDataSource = new DataSource({
     // Set Always False
     synchronize: false,
     logging: false,
-    entities: [User],
+    entities: [User, RefreshToken],
     migrations: [],
     subscribers: [],
 })
