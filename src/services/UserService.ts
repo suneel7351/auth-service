@@ -26,4 +26,16 @@ export class UserService {
             throw err
         }
     }
+
+
+    async getUserByEmail(email: string) {
+        return await this.userRepository.findOne({ where: { email } })
+
+    }
+
+
+    async matchPassword(userPassword: string, passwordHash: string) {
+        return await bcrypt.compare(userPassword, passwordHash)
+
+    }
 }

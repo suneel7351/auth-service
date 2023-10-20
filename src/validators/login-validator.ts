@@ -13,19 +13,11 @@ export default checkSchema({
         trim: true,
         isEmail: true
     },
-    firstName: {
-        errorMessage: "Firstname is required.",
-        notEmpty: true,
-        trim: true
-    },
+
     password: {
         errorMessage: "Password is required.",
         notEmpty: true,
         trim: true,
-        isLength: {
-            options: { min: 6 },
-            errorMessage: "Password must be at least 6 characters."
-        },
 
     }
 })
