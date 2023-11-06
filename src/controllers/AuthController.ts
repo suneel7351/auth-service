@@ -1,7 +1,7 @@
 
 import { Logger } from 'winston';
 import { UserService } from '../services/UserService';
-import { RegisterUserRequest } from '../types';
+import { AuthRequest, RegisterUserRequest } from '../types';
 import { JwtPayload } from 'jsonwebtoken'
 import { NextFunction, Response } from "express";
 import { validationResult } from 'express-validator';
@@ -138,13 +138,95 @@ export class AuthController {
                 maxAge: 1000 * 60 * 60 * 24 * 15
             })
 
-            res.status(201).json({ id: user.id })
+            res.status(200).json({ id: user.id })
         } catch (error) {
             // console.log(error);
             return res.status(500).json({ error })
 
         }
     }
+
+
+
+    async self(req: AuthRequest, res: Response, next: NextFunction) {
+
+        try {
+            const user = await this.userService.getById(Number(req.auth.sub))
+            if (!user) {
+                const err = createHttpError(404, "User not found.")
+                return next(err)
+            }
+            res.json(user)
+        } catch (error) {
+            next(error)
+
+        }
+    }
+
+    async refresh(req: AuthRequest, res: Response, next: NextFunction) {
+
+        try {
+            const payload: JwtPayload = {
+                sub: String(req.auth.sub),
+                role: String(req.auth.role)
+            }
+
+
+
+            const accessToken = this.tokenService.generateAccessToken(payload)
+            // CONFIG.REFRESH_TOKEN_SECRET! iska mtlb sure hain ki ye string hogi empty nhi hoga
+
+
+            // persist the refresh token
+            const user = await this.userService.getById(Number(req.auth.sub))
+            if (!user) {
+                const err = createHttpError(401, "User with the token could not find.")
+                return next(err)
+            }
+            const newRefreshToken = await this.tokenService.persistRefreshToken(user)
+
+
+            // Delete old refresh Token
+            await this.tokenService.deleteRefreshToken(Number(req.auth.id))
+
+            const refreshToken = this.tokenService.generateRefreshToken({ ...payload, id: String(newRefreshToken.id) })
+
+            res.cookie("accessToken", accessToken, {
+                httpOnly: true,
+                sameSite: 'strict',
+                domain: "localhost",
+                maxAge: 1000 * 60 * 60,
+            })
+
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                sameSite: 'strict',
+                domain: "localhost",
+                maxAge: 1000 * 60 * 60 * 24 * 15
+            })
+
+            res.status(200).json({ id: user.id })
+        } catch (error) {
+            next(error)
+            return
+
+        }
+    }
+
+
+    async logout(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            await this.tokenService.deleteRefreshToken(Number(req.auth.id))
+            this.logger.info("User has been logged out", { id: req.auth.sub })
+            res.clearCookie("accessToken")
+            res.clearCookie("refreshToken")
+            res.json({})
+        } catch (error) {
+            return next(error)
+        }
+    }
+
+
 
 }
 

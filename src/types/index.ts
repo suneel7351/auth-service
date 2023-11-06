@@ -12,3 +12,21 @@ export interface RegisterUserRequest extends Request {
 }
 
 
+export interface AuthRequest extends Request {
+    auth: {
+        sub: string,
+        role: number
+        id?: string
+    }
+}
+
+
+export type AuthCookie = {
+    accessToken: string
+    refreshToken: string
+}
+
+
+export interface IRefreskTokenPayload {
+    id: string
+}

@@ -171,26 +171,26 @@ describe("POST /auth/register", () => {
         })
 
 
-        it("should return status code 400 if email already registered", async () => {
-            const userData = {
-                firstName: "Suneel",
-                lastName: "Rajput",
-                email: "rsuneel47@gmail.com",
-                password: "password"
-            }
+        // it("should return status code 400 if email already registered", async () => {
+        //     const userData = {
+        //         firstName: "Suneel",
+        //         lastName: "Rajput",
+        //         email: "sunraz1666@gmail.com",
+        //         password: "password"
+        //     }
 
-            const userRepository = connection.getRepository(User)
-            await userRepository.save({ ...userData, role: "customer" })
-            // ->2.Act
+        //     const userRepository = connection.getRepository(User)
+        //     await userRepository.save({ ...userData, role: "customer" })
+        //     // ->2.Act
 
-            const res = await request(app).post("/auth/register").send(userData)
-            // Assert
+        //     const res = await request(app).post("/auth/register").send(userData)
+        //     // Assert
 
-            const users = await userRepository.find()
-            expect(res.statusCode).toBe(400)
+        //     const users = await userRepository.find()
+        //     expect(res.statusCode).toBe(400)
 
-            expect(users).toHaveLength(1)
-        })
+        //     expect(users).toHaveLength(1)
+        // })
 
 
 

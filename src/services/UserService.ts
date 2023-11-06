@@ -33,6 +33,11 @@ export class UserService {
 
     }
 
+    async getById(id: number) {
+        return await this.userRepository.findOne({ where: { id } })
+
+    }
+
 
     async matchPassword(userPassword: string, passwordHash: string) {
         return await bcrypt.compare(userPassword, passwordHash)

@@ -9,6 +9,10 @@ import registerValidator from '../validators/register-validator';
 import { TokenService } from "../services/Tokenservice";
 import { RefreshToken } from "../entity/RefreshToken";
 import loginValidator from "../validators/login-validator";
+import authenticate from "../middleware/authenticate";
+import { AuthRequest } from "../types/index";
+import validateRefresToken from "../middleware/validateRefresToken";
+import parseRefreshToken from "../middleware/parseRefreshToken";
 const router = Router()
 const userRepository = AppDataSource.getRepository(User)
 const refreshTokenRepo = AppDataSource.getRepository(RefreshToken)
@@ -22,4 +26,10 @@ router.post("/register", registerValidator, (req: Request, res: Response, next: 
 router.post("/login", loginValidator, (req: Request, res: Response, next: NextFunction) => authController.login(req, res, next))
 
 
+router.get("/self", authenticate, (req: Request, res: Response, next: NextFunction) => authController.self(req as AuthRequest, res, next))
+
+
+
+router.post("/refresh", validateRefresToken, (req: Request, res: Response, next: NextFunction) => authController.refresh(req as AuthRequest, res, next))
+router.post("/logout", authenticate, parseRefreshToken, (req: Request, res: Response, next: NextFunction) => authController.logout(req as AuthRequest, res, next))
 export default router
