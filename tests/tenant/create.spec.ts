@@ -80,6 +80,26 @@ describe("POST /tenants", () => {
 
         })
 
+        it("should return 403 status code if user is not an admin", async () => {
+            const tenantsData = {
+                name: "Suneel",
+                address: "kanpur"
+            }
+            const managerToken = jwks.token({
+                sub: '1',
+                role: Roles.MANAGER
+            })
+            const res = await request(app).post("/tenants")
+                .set('Cookie', [`accessToken=${managerToken}`])
+                .send(tenantsData)
+            expect(res.statusCode).toBe(403)
+            const tenantRepository = connection.getRepository(Tenant)
+            const tenants = await tenantRepository.find()
+
+            expect(tenants).toHaveLength(0)
+
+
+        })
     })
 
 
