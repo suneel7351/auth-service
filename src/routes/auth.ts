@@ -21,7 +21,7 @@ const tokenService = new TokenService(refreshTokenRepo)
 const authController = new AuthController(userService, logger, tokenService)
 
 
-router.post("/register", registerValidator, (req: Request, res: Response, next: NextFunction) => authController.register(req, res, next))
+router.post("/register", registerValidator, (req: Request, res: Response) => authController.register(req, res))
 
 router.post("/login", loginValidator, (req: Request, res: Response, next: NextFunction) => authController.login(req, res, next))
 

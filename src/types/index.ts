@@ -30,3 +30,12 @@ export type AuthCookie = {
 export interface IRefreskTokenPayload {
     id: string
 }
+
+export interface ITenant {
+    name: string
+    address: string
+}
+
+export interface CreateTenant extends Request {
+    body: ITenant
+}

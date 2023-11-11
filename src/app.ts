@@ -5,6 +5,7 @@ import { HttpError } from 'http-errors';
 import cors from 'cors';
 import cookieParser from 'cookie-parser'
 import authRouter from './routes/auth'
+import tenantRouter from './routes/tenants'
 import { logger } from './config/logger';
 
 const app = express();
@@ -37,4 +38,5 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
 
 
 app.use("/auth", authRouter)
+app.use("/tenants", tenantRouter)
 export default app;
