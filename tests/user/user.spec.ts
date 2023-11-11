@@ -9,7 +9,7 @@ describe("GET /auth/self", () => {
     let connection: DataSource
     let jwks: ReturnType<typeof createJWKMock>
     beforeAll(async () => {
-        jwks = createJWKMock("http://localhost:6989")
+        jwks = createJWKMock("http://localhost:6999")
         connection = await AppDataSource.initialize()
     })
 
@@ -38,7 +38,7 @@ describe("GET /auth/self", () => {
                 role: Roles.CUSTOMER
             })
             const response = await request(app).get("/auth/self").
-                set('Cookie', [`accessToken=${accessToken};`])
+                set('Cookie', [`accessToken=${accessToken}`])
                 .send()
             expect(response.statusCode).toBe(200)
         })

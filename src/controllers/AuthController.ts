@@ -154,7 +154,7 @@ export class AuthController {
             const user = await this.userService.getById(Number(req.auth.sub))
             if (!user) {
                 const err = createHttpError(404, "User not found.")
-                return next(err)
+                return res.status(err.statusCode).json(err)
             }
             res.json(user)
         } catch (error) {
