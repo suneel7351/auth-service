@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import TenantService from '../services/TenantService'
 import Tenant from '../controllers/TenantController'
 import { NextFunction, Request, Response, Router } from 'express'
@@ -16,6 +17,8 @@ const tenantService = new TenantService(tenantRepository)
 const tenantObject = new Tenant(tenantService, logger)
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 router.post("/", authenticate, canAccess([Roles.ADMIN]), (req: Request, res: Response, next: NextFunction) => tenantObject.create(req as CreateTenant, res, next))
-
-
+router.get("/", authenticate, (req: Request, res: Response, next: NextFunction) => tenantObject.tenantList(req, res, next))
+router.get("/:id", authenticate, (req: Request, res: Response, next: NextFunction) => tenantObject.getSingleTenant(req, res, next))
+router.patch("/:id", authenticate, (req: Request, res: Response, next: NextFunction) => tenantObject.udpateTenant(req, res, next))
+router.delete("/:id", authenticate, (req: Request, res: Response, next: NextFunction) => tenantObject.deleteTenant(req, res, next))
 export default router

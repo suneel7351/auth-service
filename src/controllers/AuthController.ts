@@ -7,6 +7,7 @@ import { NextFunction, Response } from "express";
 import { validationResult } from 'express-validator';
 import { TokenService } from '../services/Tokenservice'
 import createHttpError from 'http-errors';
+import { Roles } from '../constants';
 
 
 export class AuthController {
@@ -27,7 +28,7 @@ export class AuthController {
         this.logger.debug("Request for register user", { firstName, lastName, email, password: "****" })
 
         try {
-            const user = await this.userService.createUser({ firstName, lastName, email, password })
+            const user = await this.userService.createUser({ firstName, lastName, email, password, role: Roles.CUSTOMER })
 
 
             this.logger.info("User has been registered", { id: user.id })
@@ -156,7 +157,7 @@ export class AuthController {
                 const err = createHttpError(404, "User not found.")
                 return res.status(err.statusCode).json(err)
             }
-            res.json(user)
+            res.status(200).json(user)
         } catch (error) {
             next(error)
 

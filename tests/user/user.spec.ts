@@ -54,7 +54,7 @@ describe("GET /auth/self", () => {
             const repo = connection.getRepository(User)
             const data = await repo.save({ ...userData, role: Roles.CUSTOMER })
             const accessToken = jwks.token({ sub: String(data.id), role: data.role })
-            const res = await request(app).get("/auth/self").set("Cookie", [`accessToken=${accessToken};`]).send()
+            const res = await request(app).get("/auth/self").set("Cookie", [`accessToken=${accessToken}`]).send()
 
             expect((res.body as Record<string, string>).id).toBe(data.id)
 
