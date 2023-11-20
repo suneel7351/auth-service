@@ -5,7 +5,7 @@ import { Repository } from "typeorm";
 import createHttpError from "http-errors";
 export class UserService {
     constructor(private userRepository: Repository<User>) { }
-    async createUser({ firstName, lastName, email, password, role }: UserData) {
+    async createUser({ firstName, lastName, email, password, role, tenantId }: UserData) {
 
         const existUser = await this.userRepository.findOne({ where: { email } })
         if (existUser !== null) {
@@ -19,7 +19,7 @@ export class UserService {
         const hashPassword = await bcrypt.hash(password, saltRound)
 
         try {
-            return await this.userRepository.save({ firstName, lastName, email, password: hashPassword, role })
+            return await this.userRepository.save({ firstName, lastName, email, password: hashPassword, role, tenant: tenantId ? { id: Number(tenantId) } : undefined })
         } catch (error) {
             const err = createHttpError(500, "Data failed to store in the database")
             throw err
@@ -28,7 +28,7 @@ export class UserService {
 
 
     async getUserByEmail(email: string) {
-        return await this.userRepository.findOne({ where: { email } })
+        return await this.userRepository.findOne({ where: { email }, select: ["id", "firstName", "lastName", "role", "password", "email"] })
 
     }
 
