@@ -11,7 +11,7 @@ export const AppDataSource = new DataSource({
     // Set Always False
     synchronize: false,
     logging: false,
-    entities: ["src/entity/*.ts"],
-    migrations: ["src/migration/*.ts"],
+    entities: ["src/entity/*.{ts,js}"],
+    migrations: ["src/migration/*.{ts,js}"],
     subscribers: [],
 })

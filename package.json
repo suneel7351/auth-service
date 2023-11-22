@@ -4,6 +4,7 @@
    "description": "This is the auth service for mern stack project",
    "main": "src/server.ts",
    "scripts": {
+      "build": "tsc",
       "format": "prettier .",
       "format:check": "npm run format -- --check",
       "format:fix": "npm run format -- --write",
@@ -11,7 +12,8 @@
       "lint": "eslint .",
       "lint:fix": "npm run lint -- --fix",
       "prepare": "husky install",
-      "test": "jest --watch --runInBand",
+      "test": "jest --no-cache --coverage --all --runInBand",
+      "test:watch": "jest --watch --runInBand",
       "start": "ts-node src/index.ts",
       "migration:generate": "typeorm-ts-node-commonjs migration:generate",
       "migration:run": "typeorm-ts-node-commonjs migration:run",

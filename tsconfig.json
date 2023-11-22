@@ -17,5 +17,6 @@
         "strictPropertyInitialization": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true
-    }
+    },
+    "exclude": ["**/*.spec.ts","tests"]
 }
