@@ -9,8 +9,8 @@ on:
 
 jobs:  
     build-and-test:
-        name:Build the project
-        runs-on:ubntu-latest
+        name: Build the project
+        runs-on: ubntu-latest
         steps:
             - uses: actions/checkout@v3
             - name: Install dependencies
