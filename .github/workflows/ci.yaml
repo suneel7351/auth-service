@@ -41,7 +41,7 @@ jobs:
     build-and-push-docker:
                       name: Build and Push Docker Image
                       needs: build-and-test
-                      runs-on:ubuntu-latest
+                      runs-on: ubuntu-latest
                       env:
                         IMAGE_NAME:suneel/mern_auth
                         IMAGE_TAG: build-${{github.run_number}}
